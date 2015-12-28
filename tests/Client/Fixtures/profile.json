@@ -1,0 +1,11 @@
+{
+  "result":{
+    "contactperson":"Contact Person",
+    "address":[
+      "some address 123",
+      "3135AA City"
+    ],
+    "id":"17c9ab4",
+    "name":"CompanyName"
+  }
+}

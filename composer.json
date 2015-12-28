@@ -1,0 +1,32 @@
+{
+    "name": "bureaupieper/storee-php-client",
+    "description": "Client for the Store-E REST API",
+    "autoload": {
+        "psr-4": { "Bureaupieper\\StoreeClient\\": "src" }
+    },
+    "autoload-dev": {
+      "psr-4": { "Bureaupieper\\StoreeClient\\": "tests" }
+    },
+    "require": {
+        "php": ">=5.4",
+        "guzzlehttp/guzzle": "^6.1",
+        "tedivm/stash": "^0.13.1",
+        "symfony/dependency-injection" : "~2.7",
+        "symfony/config" : "~2.7",
+        "psr/log": "^1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.1",
+        "monolog/monolog": "^1.17"
+    },
+    "suggest": {
+        "monolog/monolog": "^1.17"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Piet Bijl",
+            "email": "piet@bureaupieper.nl"
+        }
+    ]
+}
