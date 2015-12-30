@@ -27,7 +27,7 @@ class ContentGrouped extends AbstractRequest
         parent::__construct($args);
     }
     function getPath() {
-        return '/content/list';
+        return '/content/grouped';
     }
     function handleResponse($response) {
         foreach($response['result'] as $k => $v) {

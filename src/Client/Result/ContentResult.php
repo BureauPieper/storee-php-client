@@ -132,4 +132,17 @@ class ContentResult extends AbstractResult
             }
         }
     }
+
+    /**
+     * Returns an array of unique pages published to, because there can be multiple hotspots on the same page.
+     *
+     * @return array
+     */
+    function getPagesPublishedTo() {
+        $pages = [];
+        foreach($this['meta']['issue']['hotspots'] as $hotspot) {
+            $pages[$hotspot['page']['slug']] = $hotspot['page'];
+        }
+        return $pages;
+    }
 }

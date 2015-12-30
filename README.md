@@ -1,4 +1,4 @@
-(DRAFT)
+(DRAFT) [![Build Status](https://api.travis-ci.org/BureauPieper/storee-php-client.svg?branch=master)](https://travis-ci.org/BureauPieper/storee-php-client)
 =======
 
 ## Install

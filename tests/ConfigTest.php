@@ -112,9 +112,9 @@ class ConfigTest extends BaseTest
             ]],
             ['default_driver' => false],
             ['default_driver' => null],
-            ['default_driver' => [
-                'path' => '/bla/bla',
-            ]],
+            ['default_driver' => ['path' => '/bla/bla',]],
+            // https://github.com/symfony/symfony/issues/17153
+//            ['default_driver' => ['mail' => ['enabled' => false]]],
             ['default_driver' => ['mail' => ['to' => 'qwer', 'subject' => 'qwer', 'from' => 'qwer']]]
         ]);
     }

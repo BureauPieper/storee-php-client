@@ -71,7 +71,6 @@ class ConfigTree
             if ($isSymfony) {
                 $logging->scalarNode('service')
                     ->defaultNull()
-                    ->cannotBeEmpty()
                     ->end();
             }
 
@@ -106,13 +105,12 @@ class ConfigTree
             if ($isSymfony) {
                 $cache->scalarNode('service')
                     ->defaultNull()
-                    ->cannotBeEmpty()
                     ->end();
             }
 
             $defaults = $cache->arrayNode('default_driver')->canBeEnabled()->addDefaultsIfNotSet()->children();
                 $defaults->scalarNode('path')
-                    ->defaultValue($isSymfony ? '%kernel.cache_dir%/bureaupieper_storee' : __DIR__ . '/../var/cache')
+                    ->defaultValue($isSymfony ? '%kernel.cache_dir%' : __DIR__ . '/../var/cache')
                     ->cannotBeEmpty()
                     ->end();
 

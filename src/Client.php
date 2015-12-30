@@ -77,7 +77,7 @@ class Client
                     throw new ClientException(ClientException::CODE_CACHE_PATH_NOT_WRITABLE, 0, [$config['cache']['default_driver']['path']]);
                 }
                 $cacheDriver = new FileSystem([
-                    'path' => $config['cache']['default_driver']['path']
+                    'path' => $config['cache']['default_driver']['path'] . '/storee-client'
                 ]);
             }
             $this->cachepool = new Pool($cacheDriver);
