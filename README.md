@@ -32,11 +32,22 @@ $result = $client->request($req);
 
 A plain GuzzleHttp instance is used by default, checkout Guzzle for more information.
 
+- getlastRequest doesnt work when passing your own client, feel free to add ```Bureaupieper\StoreeClientEffectiveUrlMiddleware``` to your own handler stack
+when passing a client as following:
+```php
+$stack = GuzzleHttp\HandlerStack::create();
+$effectiveUrlMiddleware = new Bureaupieper\StoreeClientEffectiveUrlMiddleware();
+$stack->push(GuzzleHttp\Middleware::mapRequest($effectiveUrlMiddleware));
+$client = new GuzzleHttp\Client([
+    'handler' => $stack
+]);
+```
+
 ## Caching
 
 Enabled by default with a filesystem driver. See Stash for a wide variety of driver options if you need to setup memcache across multiple nodes for example.
 
-Cache will be refresh based on the Time-to-renew(ttr) setting, TTL is irrelevant. If the endpoint goes down the platform stays up.
+Cache will be refreshed based on the Time-to-renew(ttr) setting, TTL is irrelevant. If the endpoint goes down the platform stays up.
 
 ## PSR-4 Logging
 

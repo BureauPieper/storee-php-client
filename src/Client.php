@@ -57,6 +57,11 @@ class Client
     private $logger;
 
     /**
+     * @var EffectiveUrlMiddleware
+     */
+    private $effectiveUrlMiddleware;
+
+    /**
      * @param Config $config
      * @param \GuzzleHttp\Client $client
      * @param AbstractDriver $cacheDriver
@@ -65,7 +70,18 @@ class Client
     function __construct(Config $config, \GuzzleHttp\Client $client = null, AbstractDriver $cacheDriver = null, LoggerInterface $logger = null)
     {
         $this->cfg = $config;
-        $this->guzzle = $client ?: new \GuzzleHttp\Client();
+
+        if (!$client)
+        {
+            $stack = \GuzzleHttp\HandlerStack::create();
+            $this->effectiveUrlMiddleware = $urlmiddleware = new EffectiveUrlMiddleware();
+            $stack->push(\GuzzleHttp\Middleware::mapRequest($urlmiddleware));
+            $client = new \GuzzleHttp\Client([
+                'handler' => $stack,
+                \GuzzleHttp\RequestOptions::ALLOW_REDIRECTS => true
+            ]);
+        }
+        $this->guzzle = $client;
 
         if ($config['cache']['enabled'])
         {
@@ -130,6 +146,14 @@ class Client
         asort($args);
 
         return $request->getPath() . '.' . $this->cfg->getFormat() . '_' . http_build_query($args);
+    }
+
+    /**
+     * @return EffectiveUrlMiddleware
+     */
+    function getLastRequest()
+    {
+        return $this->effectiveUrlMiddleware;
     }
 
     /**
