@@ -108,9 +108,9 @@ class ConfigTree
                     ->end();
             }
 
-            $defaults = $cache->arrayNode('default_driver')->canBeEnabled()->addDefaultsIfNotSet()->children();
+            $defaults = $cache->arrayNode('default_driver')->canBeDisabled()->addDefaultsIfNotSet()->children();
                 $defaults->scalarNode('path')
-                    ->defaultValue($isSymfony ? '%kernel.cache_dir%' : __DIR__ . '/../var/cache')
+                    ->defaultValue($isSymfony ? '%kernel.cache_dir%' : __DIR__ . '/../../var/cache')
                     ->cannotBeEmpty()
                     ->end();
 

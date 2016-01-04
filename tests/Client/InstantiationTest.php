@@ -20,6 +20,8 @@ use Bureaupieper\StoreeClient\BaseTest;
  */
 class InstantiationTest extends BaseTest
 {
+    const FQCLIENT = '\Bureaupieper\StoreeClient\Client';
+
     function validConfig() {
         return [
             'version' => 1,
@@ -33,7 +35,7 @@ class InstantiationTest extends BaseTest
     }
 
     function testValidInstance() {
-        $this->assertInstanceOf('Bureaupieper\\StoreeClient\\Client', new Client($this->validConfigInstance()));
+        $this->assertInstanceOf(self::FQCLIENT, new Client($this->validConfigInstance()));
     }
 
     /**
@@ -66,6 +68,12 @@ class InstantiationTest extends BaseTest
      */
     function testInvalidLogger() {
         new Client($this->validConfigInstance(), null, null, new \stdClass());
+    }
+
+    function testCacheEnabledWithDefaultDriver() {
+        $conf = $this->validConfig();
+        $conf['cache'] = true;
+        $this->assertInstanceOf(self::FQCLIENT, new Client(new Client\Config($conf)));
     }
 
     /**
