@@ -74,7 +74,7 @@ class ConfigTree
                     ->end();
             }
 
-            $defaults = $logging->arrayNode('default_driver')->canBeEnabled()->addDefaultsIfNotSet()->children();
+            $defaults = $logging->arrayNode('default_driver')->canBeDisabled()->addDefaultsIfNotSet()->children();
 
                 $defaults->scalarNode('path')
                     ->defaultValue($isSymfony ? '%kernel.logs_dir%' : __DIR__ . '/../var/cache')
