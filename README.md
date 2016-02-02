@@ -2,11 +2,11 @@ Store-E PHP Client [![Build Status](https://api.travis-ci.org/BureauPieper/store
 =======
 
 [Store-E](http://store-e.nl) is a content(-as-a-service/repository) platform taking care of all your content management needs.
-Content is delivered through 'Hotspots' and 'Pages' which you can define. Content comes along with every 
+Content is delivered through 'Hotspots' and 'Pages' which you can define. Published content comes along with every 
 form of media, which is also delivered through-, automated and managed by Store-E. Bitmaps in multiple formats and
-resolutions(No restrictions!), videos in H.264, MP4, OGV, documents and much more. 
+resolutions(no restrictions), videos in H.264, MP4, OGV, documents, third party integrations, and much more. 
 
-The client enables you to connect your website, enterprise network or social media platforms to our content repository in a matter of hours.
+This client enables you to connect your website, enterprise network or social media platforms to our content repository in a matter of hours.
 
 This library supports [PSR-3](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-3-logger-interface.md) logging and provides some extra functionality for [Monolog](https://github.com/Seldaek/monolog). Caching is handled by [Stash](https://github.com/tedious/stash). HTTP abstraction is handled by [Guzzle](https://github.com/guzzle/guzzle). You're free to provide your own for any of the dependencies.
 
