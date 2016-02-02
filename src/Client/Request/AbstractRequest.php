@@ -15,17 +15,17 @@ abstract class AbstractRequest
     /**
      * @var bool
      */
-    private $use_cache = true;
+    protected $use_cache = true;
 
     /**
      * @var integer
      */
-    private $ttr;
+    protected $ttr;
 
     /**
      * @var array
      */
-    private $args;
+    protected $args;
 
     /**
      * @param array $args

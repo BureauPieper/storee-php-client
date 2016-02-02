@@ -17,13 +17,15 @@ class ClientException extends \Bureaupieper\StoreeClient\Exception
     const CODE_LOGGER_NO_MONOLOG = 0x4;
     const CODE_LOGGER_PATH_NOT_WRITABLE = 0x8;
     const CODE_CACHE_PATH_NOT_WRITABLE = 0x10;
+    const CODE_INVALID_CONTENTYPE = 0x20;
 
     static $msg = [
         self::CODE_CACHE_NO_DRIVER => 'Cache is enabled, but no driver passed and the default driver is disabled.',
         self::CODE_LOGGER_NO_DRIVER => 'Logging enabled, but no driver passed and the default driver is disabled.',
         self::CODE_LOGGER_NO_MONOLOG => 'Monolog is used as the default logger, but wasn\'t found.',
         self::CODE_LOGGER_PATH_NOT_WRITABLE => 'Path %s is not writable.',
-        self::CODE_CACHE_PATH_NOT_WRITABLE => 'Path %s is not writable.'
+        self::CODE_CACHE_PATH_NOT_WRITABLE => 'Path %s is not writable.',
+        self::CODE_INVALID_CONTENTYPE => 'Unknown content type passed.',
     ];
 
     function __construct($msg = "", $code = 0, $params = []) {

@@ -14,13 +14,22 @@ use Bureaupieper\StoreeClient\Client;
 
 class SpecificContentList extends AbstractRequest
 {
-    private $path;
-
-    function __construct(array $args = [], $type) {
-        throw new \Exception('Not yet implemented');
+    function __construct(array $args = [], $ctype) {
+        if (!in_array($ctype, Client::$contentTypes)) {
+            throw new Client\ClientException('Invalid content type passed', Client\ClientException::CODE_INVALID_CONTENTYPE);
+        }
+        $args['ctype'] = $ctype;
+        parent::__construct($args);
     }
 
     function getPath() {
-        return $this->path;
+        return '/content/list/' . $this->args['ctype'];
+    }
+
+    function handleResponse($response) {
+        foreach($response['result'] as $k => $v) {
+            $response['result'][$k] = new Client\Result\ContentResult($v);
+        }
+        return $response;
     }
 }
