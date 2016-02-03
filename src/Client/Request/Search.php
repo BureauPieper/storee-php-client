@@ -14,17 +14,14 @@ use Bureaupieper\StoreeClient\Client;
 
 class Search extends AbstractRequest
 {
-    function __construct(array $args = [], $ctype) {
-        throw new \Exception('Not yet implemented');
-        if (!in_array($ctype, Client::$contentTypes)) {
-            throw new Client\ClientException('Invalid content type passed', Client\ClientException::CODE_INVALID_CONTENTYPE);
-        }
-        $args['ctype'] = $ctype;
+    function __construct($query, array $ctypes, array $args = []) {
+        $args['ctypes'] = $ctypes;
+        $args['search'] = $query;
         parent::__construct($args);
     }
 
     function getPath() {
-        return '/content/list';
+        return '/content/search';
     }
 
     function handleResponse($response) {
