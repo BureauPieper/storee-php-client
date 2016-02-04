@@ -16,7 +16,9 @@ class Search extends AbstractRequest
 {
     function __construct($query, array $ctypes, array $args = []) {
         $args['ctypes'] = $ctypes;
-        $args['search'] = $query;
+        if ($query) {
+            $args['search'] = $query;
+        }
         parent::__construct($args);
     }
 
