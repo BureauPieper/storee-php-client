@@ -13,7 +13,7 @@ namespace Bureaupieper\StoreeClient;
 trait SimpleArrayAccessorTrait
 {
     function __call($name, $args) {
-        $name = preg_replace('/^get|is|has/', '', $name);
+        $name = preg_replace('/^(get|is|has)/', '', $name);
         $split = preg_split('/(?=[A-Z])/', $name, -1, PREG_SPLIT_NO_EMPTY);
         $pool = $this;
         foreach($split as $token) {
