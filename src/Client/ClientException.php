@@ -18,6 +18,7 @@ class ClientException extends \Bureaupieper\StoreeClient\Exception
     const CODE_LOGGER_PATH_NOT_WRITABLE = 0x8;
     const CODE_CACHE_PATH_NOT_WRITABLE = 0x10;
     const CODE_INVALID_CONTENTYPE = 0x20;
+    const CODE_INVALID_JSON = 0x40;
 
     static $msg = [
         self::CODE_CACHE_NO_DRIVER => 'Cache is enabled, but no driver passed and the default driver is disabled.',
@@ -26,6 +27,7 @@ class ClientException extends \Bureaupieper\StoreeClient\Exception
         self::CODE_LOGGER_PATH_NOT_WRITABLE => 'Path %s is not writable.',
         self::CODE_CACHE_PATH_NOT_WRITABLE => 'Path %s is not writable.',
         self::CODE_INVALID_CONTENTYPE => 'Unknown content type passed.',
+        self::CODE_INVALID_JSON => 'Invalid JSON data received from the end-point, got "%s"',
     ];
 
     function __construct($msg = "", $code = 0, $params = []) {

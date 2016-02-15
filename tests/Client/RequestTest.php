@@ -157,4 +157,17 @@ class RequestTest extends BaseTest
 
         $this->assertTrue($this->loghandler->hasInfoThatContains('Refreshing cache'));
     }
+
+    /**
+     * @expectedException     \Bureaupieper\StoreeClient\Client\ClientException
+     * @expectedExceptionCode 64
+     */
+    function testInvalidJSONResult()
+    {
+        $client = $this->prepare([
+            new Response(200, [], file_get_contents(__DIR__ .'/Fixtures/invalid.json')),
+        ], array_merge($this->conf(), ['cache' => true]));
+
+        $client->request(Client\Request\Factory::create('profile'));
+    }
 }

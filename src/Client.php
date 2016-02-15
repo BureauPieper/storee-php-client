@@ -183,7 +183,6 @@ class Client
                 $cacheKey = $this->buildCacheKey($request, $args);
                 $cacheKeyLog = preg_replace('/key=[^&]+/', 'key=*****', $cacheKey);
                 $cacheItem = $this->cachepool->getItem($cacheKey);
-                $cachedData = $this->_deserialize($this->cfg->getFormat(), $cacheItem->get());
 
                 // Disabled on a request basis?
                 if (!$request->isUseCache()) {
@@ -195,6 +194,7 @@ class Client
                 $age = null;
                 if (!$cacheItem->isMiss()) {
                     $age = time() - $cacheItem->getCreation()->getTimestamp();
+                    $cachedData = $this->_deserialize($this->cfg->getFormat(), $cacheItem->get());
                 }
 
                 // Time to renew
@@ -234,7 +234,6 @@ class Client
             }
             while(false);
         }
-
         try {
             $uri = $this->cfg->getEndpoint() . $request->getPath() . '.' . $this->cfg->getFormat();
 
@@ -255,7 +254,7 @@ class Client
             }
 
             // Return stale data
-            if (isset($cacheItem) && !$cacheItem->isMiss()) {
+            if (isset($cacheItem) && isset($cachedData)) {
                 $this->logger->info('Returning stale data!');
                 return $request->handleResponse($cachedData);
             }
@@ -288,8 +287,12 @@ class Client
     {
         switch($format) {
             case 'json':
-                return json_decode($data, true);
-            break;
+                $decoded = json_decode($data, true);
+                if ($decoded === null) {
+                    throw new ClientException(ClientException::CODE_INVALID_JSON, 0, [$data]);
+                }
+                return $decoded;
+                break;
             default:
                 return $data;
         }
