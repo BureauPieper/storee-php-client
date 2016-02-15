@@ -62,6 +62,11 @@ class Client
     private $effectiveUrlMiddleware;
 
     /**
+     * @var bool
+     */
+    private $debug = false;
+
+    /**
      * @param Config $config
      * @param \GuzzleHttp\Client $client
      * @param AbstractDriver $cacheDriver
@@ -124,6 +129,11 @@ class Client
             }
         }
         $this->logger = $logger ?: new NullLogger();
+    }
+
+    function setDebug($switch)
+    {
+        $this->debug = (bool)$switch;
     }
 
     function getCachepool()
@@ -239,6 +249,10 @@ class Client
         {
             // Log and report
             $this->logger->error((string) $e);
+
+            if ($this->debug) {
+                throw $e;
+            }
 
             // Return stale data
             if (isset($cacheItem) && !$cacheItem->isMiss()) {
