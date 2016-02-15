@@ -9,8 +9,6 @@
 
 namespace Bureaupieper\StoreeClient\Client\Result;
 
-use Bureaupieper\StoreeClient\Client\ClientException;
-
 /**
  * Class ContentResult
  * @package Bureaupieper\StoreeClient\Client\Result
@@ -26,11 +24,19 @@ use Bureaupieper\StoreeClient\Client\ClientException;
 class ContentResult extends AbstractResult
 {
     /**
+     * To memmorize which placeholder is selected from the possible pool of multiple images
+     *
+     * @var int
+     */
+    private $placeholder_pick;
+
+    /**
      * Returns the short content if provided or a substring of the normal version
      *
      * @return string
      */
-    function getContentShort() {
+    function getContentShort()
+    {
         return $this['content_short'] ?: substr(strip_tags($this['content']), 0, 200);
     }
 
@@ -42,7 +48,8 @@ class ContentResult extends AbstractResult
      * @param int $maxSize              Remaining pieces will be glued together
      * @return array|null
      */
-    function getContentSeparated($forceArrayReturn = false, $maxSize = null) {
+    function getContentSeparated($forceArrayReturn = false, $maxSize = null)
+    {
         if (isset($this['meta']['content']['split'])) {
             $c = $this['meta']['content']['split'];
             if ($maxSize && $maxSize < count($c)) {
@@ -60,7 +67,8 @@ class ContentResult extends AbstractResult
      *
      * @return string|null
      */
-    function getUrl() {
+    function getUrl()
+    {
         return $this['meta']['content']['endpoint'];
     }
 
@@ -91,34 +99,60 @@ class ContentResult extends AbstractResult
      *
      * @param array $filters    image|video|document|audio|other(binary attachments)
      */
-    function getFilteredMedia(array $filters)
+    function getFilteredMedia(array $filters, $allowPlaceholder = true)
     {
         $col = [];
         foreach($this['media'] as $medium) {
+            if (!isset($hasImage) && $medium['type'] == 'image') {
+                $hasImage = true;
+            }
             if (in_array($medium['type'], $filters)) {
                 $col[] = $medium;
             }
         }
+
+        // Add a placeholder if the image type was requested, and no images were found.
+        if (in_array('image', $filters)
+            && !isset($hasImage)
+            && $allowPlaceholder
+            && $this->getPlaceholder()) {
+            $col[] = $this->getPlaceholder();
+        }
+
         return $col;
     }
 
-    /**
-     * @param $format
-     * @return mixed
-     */
-    function getSrc($format) {
-        return $this['meta']['src'][$format];
-    }
+//    /**
+//     * @param $format
+//     * @return mixed
+//     */
+//    function getSrc($format)
+//    {
+//        return $this['meta']['src'][$format];
+//    }
 
     /**
+     * 1) Preferred images will be set server-side if images are part of the media collection.
+     *
+     * 2) If not and placeholders are found, one will be returned regardless of the orientation.
+     * Returning placeholders based on preference would mean no randomness between the image shown
+     * and could return in content-listing with every single one showing the same image.
+     * So the parameters have no effect on placeholders. They are just a fallback.
+     *
      * @param string $orientation           portrait|landscape
      * @param null $src                     Return the src string instead of the medium array
      *
-     * @return null|array|string
+     * @return null|array
      */
     function getPreferredImage($orientation, $src = null)
     {
-        if (!$this->getImages()) {
+        if (!$this->getFilteredMedia(['image'], false)) {
+            if ($ph = $this->getPlaceholder()) {
+                if ($src) {
+                    return $ph['meta']['src'][$src];
+                }
+                return $ph;
+            }
             return null;
         }
 
@@ -138,11 +172,26 @@ class ContentResult extends AbstractResult
      *
      * @return array
      */
-    function getPagesPublishedTo() {
+    function getPagesPublishedTo()
+    {
         $pages = [];
         foreach($this['meta']['issue']['hotspots'] as $hotspot) {
             $pages[$hotspot['page']['slug']] = $hotspot['page'];
         }
         return $pages;
+    }
+
+    /**
+     * If a placeholder pool is set for the content-type a random one will be chosen, unless a specified
+     */
+    function getPlaceholder($index = null)
+    {
+        if (!isset($this['meta']['media']['placeholder'])) {
+            return null;
+        }
+        if (!$this->placeholder_pick) {
+            $this->placeholder_pick = rand(0, count($this['meta']['media']['placeholder']) - 1);
+        }
+        return $this['meta']['media']['placeholder'][$index ?: $this->placeholder_pick];
     }
 }
