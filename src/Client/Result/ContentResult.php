@@ -80,10 +80,11 @@ class ContentResult extends AbstractResult
      */
     function getMedium($id)
     {
-        if (!isset($this['media'][$id])) {
-            return null;
+        foreach($this['media'] as $medium) {
+            if ($medium['id'] == $id) {
+                return $medium;
+            }
         }
-        return $this['media'][$id];
     }
 
     /**
@@ -122,49 +123,94 @@ class ContentResult extends AbstractResult
         return $col;
     }
 
-//    /**
-//     * @param $format
-//     * @return mixed
-//     */
-//    function getSrc($format)
-//    {
-//        return $this['meta']['src'][$format];
-//    }
+    /**
+     * Did the user favourite an image?
+     *
+     * @return bool
+     */
+    function hasPreferredImage() {
+        return (bool) $this['meta']['media']['preferred_image'];
+    }
 
     /**
-     * 1) Preferred images will be set server-side if images are part of the media collection.
+     * If there is a preferred image this one will be returned. If not, the first one of the
+     * collection will be returned.
      *
-     * 2) If not and placeholders are found, one will be returned regardless of the orientation.
-     * Returning placeholders based on preference would mean no randomness between the image shown
-     * and could return in content-listing with every single one showing the same image.
-     * So the parameters have no effect on placeholders. They are just a fallback.
+     * If an $orientation is passed, @getPreferredImageByOrientation will be called as a fallback, this will allow
+     * alot less boilerplate code in sitations where you might want the user' favourite image as the highest priority,
+     * but the best fitting alternative to a certain orientation, if not.
      *
-     * @param string $orientation           portrait|landscape
-     * @param null $src                     Return the src string instead of the medium array
+     * F.e.: A large header image:
      *
-     * @return null|array
+     * getPreferredImage('1080p', 'landscape')          Get the user-preferred image, and return the url to the source
+     *                                                  of the '1080' format. Or give me the image that best fits the
+     *                                                  'landscape' aspect. And if there is no image found at all, give me
+     *                                                  a placeholder if possible.
+     *
+     * NB: Falls back to placeholders
+     *
+     * @param null $aspect                              Return the src string instead of the medium array
+     * @param string|null $orientation                  portrait|landscape|null
+     *
+     * @return null|string|array
      */
-    function getPreferredImage($orientation, $src = null)
+    function getPreferredImage($aspect = null, $orientation = null)
     {
+        // If theres no images, check for placeholders
         if (!$this->getFilteredMedia(['image'], false)) {
             if ($ph = $this->getPlaceholder()) {
-                if ($src) {
-                    return $ph['meta']['src'][$src];
+                if ($aspect) {
+                    return $ph['meta']['src'][$aspect];
                 }
                 return $ph;
             }
             return null;
         }
 
-        $id = $this['meta']['media']['preferred_orientation'][$orientation];
-        foreach($this['media'] as $medium) {
-            if ($medium['id'] == $id) {
-                if ($src) {
-                    return $medium['meta']['src'][$src];
-                }
-                return $medium;
-            }
+        if ($this->hasPreferredImage()) {
+            $medium = $this->getMedium($this['meta']['media']['preferred_image']);
         }
+        elseif ($orientation) {
+            $medium = $this->getPreferredImageByOrientation($orientation);
+        }
+        else {
+            $medium = $this['media'][0];
+        }
+
+        if ($aspect) {
+            return $medium['meta']['src'][$aspect];
+        }
+        return $medium;
+    }
+
+    /**
+     * These images defined server-side based on aspect ratio and dimensions.
+     *
+     * NB: Falls back to a possible placeholder.
+     *
+     * @param string $orientation       portrait|landscape
+     * @param null $aspect
+     *
+     * @return array|string|null
+     */
+    function getPreferredImageByOrientation($orientation, $aspect = null)
+    {
+        // If theres no images, check for placeholders
+        if (!$this->getFilteredMedia(['image'], false)) {
+            if ($ph = $this->getPlaceholder()) {
+                if ($aspect) {
+                    return $ph['meta']['src'][$aspect];
+                }
+                return $ph;
+            }
+            return null;
+        }
+
+        $medium = $this->getMedium($this['meta']['media']['preferred_orientation'][$orientation]);
+        if ($aspect) {
+            return $medium['meta']['src'][$aspect];
+        }
+        return $medium;
     }
 
     /**
@@ -182,7 +228,8 @@ class ContentResult extends AbstractResult
     }
 
     /**
-     * If a placeholder pool is set for the content-type a random one will be chosen, unless a specified
+     * Multiple placeholders can be set for a specific content-type, keep in mind that one will be
+     * set for this session. Server-side relating a specific random placeholder as a preferred one is a WIP.
      */
     function getPlaceholder($index = null)
     {
