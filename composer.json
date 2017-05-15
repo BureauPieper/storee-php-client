@@ -8,7 +8,7 @@
       "psr-4": { "Bureaupieper\\StoreeClient\\": "tests" }
     },
     "require": {
-        "php": "~5.5",
+        "php": ">=5.5",
         "guzzlehttp/guzzle": "^6.1",
         "tedivm/stash": "^0.13.1",
         "symfony/dependency-injection" : "~2.7",
