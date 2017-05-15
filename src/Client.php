@@ -29,6 +29,7 @@ class Client
     const CONTENT_TYPE_SERVICE = 'service';
     const CONTENT_TYPE_JOB = 'job';
     const CONTENT_TYPE_NEWS = 'news';
+    const CONTENT_TYPE_PERSON = 'person';
 
     static $contentTypes = [
         self::CONTENT_TYPE_ARTICLE,
@@ -38,7 +39,8 @@ class Client
         self::CONTENT_TYPE_PRODUCT,
         self::CONTENT_TYPE_SERVICE,
         self::CONTENT_TYPE_JOB,
-        self::CONTENT_TYPE_NEWS
+        self::CONTENT_TYPE_NEWS,
+        self::CONTENT_TYPE_PERSON
     ];
 
     /**
@@ -76,6 +78,9 @@ class Client
     {
         $this->cfg = $config;
 
+        /**
+         * @todo
+         */
         if (!$client)
         {
             $stack = \GuzzleHttp\HandlerStack::create();
