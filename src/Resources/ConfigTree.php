@@ -21,7 +21,7 @@ class ConfigTree
         $rootNode = $treeBuilder->root('bureaupieper_storee', 'array');
         $root = $rootNode->children();
         $root->scalarNode('endpoint')
-            ->defaultValue('https://store-e.nl/api')
+            ->defaultValue('https://my.store-e.nl/api')
             ->cannotBeEmpty()
             ->validate()
                 ->ifTrue(function($v) { return !preg_match('/^https?:\/\//', $v); })
